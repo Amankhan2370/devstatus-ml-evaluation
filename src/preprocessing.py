@@ -16,18 +16,21 @@ def load_and_preprocess_data(
 
     df = df.dropna(subset=[target_column]).reset_index(drop=True)
     feature_df = df.drop(columns=[target_column])
+    numeric_df = feature_df.select_dtypes(include=[np.number])
+    if numeric_df.empty:
+        raise ValueError("No numeric feature columns found after filtering.")
 
     # Mean imputation for numeric features
-    feature_df = feature_df.fillna(feature_df.mean(numeric_only=True))
+    numeric_df = numeric_df.fillna(numeric_df.mean())
 
-    if feature_df.isnull().any().any():
+    if numeric_df.isnull().any().any():
         raise ValueError("Missing values remain after mean imputation.")
 
     label_encoder = LabelEncoder()
     y = label_encoder.fit_transform(df[target_column].astype(str))
 
     scaler = StandardScaler()
-    X_scaled = scaler.fit_transform(feature_df.values)
+    X_scaled = scaler.fit_transform(numeric_df.values)
 
-    feature_names = feature_df.columns.tolist()
+    feature_names = numeric_df.columns.tolist()
     return X_scaled, y, feature_names

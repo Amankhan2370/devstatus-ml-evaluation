@@ -1,0 +1,4 @@
+method,accuracy,selected_features
+Forward Wrapper (3 features),0.7894736842105263,"Infant mortality, Unemployment rate, GDP"
+PCA (3 components),0.7105263157894737,
+LDA (2 components),0.7368421052631579,
